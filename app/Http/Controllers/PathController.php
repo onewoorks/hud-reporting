@@ -40,21 +40,27 @@ class PathController extends Controller
                 )
             )
         );
+	echo "Generate report in progress\n";
+	echo "---------------------------\n";
         foreach($reports as $report){
+	    $section = $phpWord->addSection([
+		'marginRight' => 1077,
+		'marginLeft' => 1077
+		]);
             foreach($report as $loc=>$status){
                 echo "\tCreating : " . $loc . PHP_EOL;
-                $section = $phpWord->addSection([
-                    'marginRight' => 1077,
-                    'marginLeft' => 1077
-                ]);
-                $header = $section->addHeader();
-                $footer = $section->addFooter();
-                $header->addText(htmlspecialchars($header_title, ENT_COMPAT, 'UTF-8'),[],['align'=> 'end']);
-                $footer->addText(htmlspecialchars($footer_title, ENT_COMPAT, 'UTF-8'),[],['align' => 'center']);
+                //$section = $phpWord->addSection([
+                //    'marginRight' => 1077,
+                //    'marginLeft' => 1077
+                //]);
+//                $header = $section->addHeader();
+//                $footer = $section->addFooter();
+//                $header->addText(htmlspecialchars($header_title, ENT_COMPAT, 'UTF-8'),[],['align'=> 'end']);
+//               $footer->addText(htmlspecialchars($footer_title, ENT_COMPAT, 'UTF-8'),[],['align' => 'center']);
                 $section->addListItem(htmlspecialchars($loc, ENT_COMPAT, 'UTF-8'),0, null, 'multilevel');
                 foreach($status as $stat=>$progress){
                     $section->addListItem(strtoupper($stat),1,null, 'multilevel');
-                    $section->addTextBreak(1);
+  //                  $section->addTextBreak(1);
                     $image_rows = array_chunk($progress,2);
                     foreach($image_rows as $images){
                         $textrun = $section->addTextRun();
@@ -68,6 +74,7 @@ class PathController extends Controller
                         $section->addTextBreak(1);
                     }
                 }
+		$section->addPageBreak();
             }
         }
         
@@ -75,7 +82,7 @@ class PathController extends Controller
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $filename = sprintf("%s_%s.docx", strtoupper(date('Y-m-d')), $project);
         $objWriter->save(storage_path().'/reports/'.$filename);
-        echo "Generate Report Completed";
+        echo "Generate Report Completed\n\n";
         // return response()->download(public_path($filename));
     }
 
