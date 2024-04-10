@@ -22,7 +22,7 @@ class ImageController extends Controller
         foreach($imageFiles as $index=>$r_image){
             $target_path = storage_path().'/output/'.$project_folder.'/'.$r_image->getRelativePathname();
             $image = Image::make($r_image->getRealPath());
-            $image->resize(800, null, function ($constraint) {
+            $image->resize(400, null, function ($constraint) {
                 $constraint->aspectRatio();
             });
             if (!File::exists(dirname($target_path))) {
